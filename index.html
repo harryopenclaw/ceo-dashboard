@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Immediac — CEO Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/reset.css" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+</head>
+<body>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar__brand">
+      <div class="topbar__logo">IM</div>
+      <span class="topbar__company">Immediac</span>
+    </div>
+    <span class="topbar__meta" id="topbar-period"></span>
+    <div class="topbar__right">
+      <span class="badge badge--green">● Live</span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero KPI -->
+    <section class="hero-kpi" id="hero-kpi" aria-label="Key Performance Indicator"></section>
+
+    <!-- KPI Cards -->
+    <section class="kpi-strip" id="kpi-cards" aria-label="KPI Summary"></section>
+
+    <!-- Initiatives + Projects -->
+    <div class="dashboard-grid">
+
+      <!-- Initiatives -->
+      <div class="card">
+        <div class="card__header">
+          <div class="card__title">
+            <div class="card__icon" style="background:var(--color-primary-lt);color:var(--color-primary)">🚀</div>
+            Initiatives
+          </div>
+        </div>
+        <div class="card__body--flush accordion" id="initiatives-list"></div>
+      </div>
+
+      <!-- Projects -->
+      <div class="card">
+        <div class="card__header">
+          <div class="card__title">
+            <div class="card__icon" style="background:var(--color-success-lt);color:var(--color-success)">🔧</div>
+            Active Projects
+          </div>
+        </div>
+        <div class="card__body--flush accordion" id="projects-list"></div>
+      </div>
+
+    </div>
+
+    <!-- To-Do + Delegation -->
+    <div class="dashboard-grid">
+
+      <!-- To-Do -->
+      <div class="card">
+        <div class="card__header">
+          <div class="card__title">
+            <div class="card__icon" style="background:var(--color-warning-lt);color:var(--color-warning)">✅</div>
+            To-Do
+          </div>
+          <span class="badge badge--gray" id="todo-count"></span>
+        </div>
+        <div class="card__body--flush" id="todos-list"></div>
+      </div>
+
+      <!-- Delegation & Follow-up -->
+      <div class="card">
+        <div class="card__header">
+          <div class="card__title">
+            <div class="card__icon" style="background:var(--color-purple-lt);color:var(--color-purple)">🤝</div>
+            Delegation & Follow-up
+          </div>
+        </div>
+        <div class="card__body--flush" id="delegation-list"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/accordion.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
