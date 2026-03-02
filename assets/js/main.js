@@ -136,18 +136,93 @@ function renderProjects(items) {
     </div>`).join('');
 }
 
-/* ── Todos ── */
-function renderTodos(items) {
-  const priorityColor = { high: 'var(--color-danger)', medium: 'var(--color-warning)', low: 'var(--color-text-3)' };
-  document.getElementById('todos-list').innerHTML = items.map(t => `
-    <div class="todo-item ${t.done ? 'is-done' : ''}" data-id="${t.id}">
-      <div class="todo-check"></div>
-      <div style="flex:1">
-        <div class="todo-text">${t.text}</div>
-        <div class="todo-meta">${t.due}</div>
-      </div>
-      <span class="badge badge--${t.priority === 'high' ? 'red' : t.priority === 'medium' ? 'amber' : 'gray'}">${t.priority}</span>
+/* ── Today's Focus (interactive, localStorage) ── */
+const FOCUS_KEY = 'immediac-focus-v1';
+
+function focusTodayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function focusLoad() {
+  try { return JSON.parse(localStorage.getItem(FOCUS_KEY) || '{}'); } catch { return {}; }
+}
+
+function focusSave(data) {
+  localStorage.setItem(FOCUS_KEY, JSON.stringify(data));
+}
+
+function focusGetTasks() {
+  return focusLoad()[focusTodayKey()] || [];
+}
+
+function focusSetTasks(tasks) {
+  const data = focusLoad();
+  data[focusTodayKey()] = tasks;
+  focusSave(data);
+}
+
+function focusRender() {
+  const tasks = focusGetTasks();
+  const list = document.getElementById('focus-list');
+  const bar = document.getElementById('focus-progress-bar');
+  const label = document.getElementById('focus-progress-label');
+
+  if (!list) return;
+
+  const done = tasks.filter(t => t.done).length;
+  const pct = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+  bar.style.width = pct + '%';
+  label.textContent = tasks.length ? `${done}/${tasks.length} done` : '';
+
+  if (!tasks.length) {
+    list.innerHTML = '<div class="focus-empty">Nothing yet — add your first task ☀️</div>';
+    return;
+  }
+
+  list.innerHTML = tasks.map(t => `
+    <div class="focus-item ${t.done ? 'is-done' : ''}">
+      <div class="focus-check" onclick="focusToggle(${t.id})"></div>
+      <span class="focus-text">${escFocus(t.text)}</span>
+      <button class="focus-delete" onclick="focusRemove(${t.id})" title="Remove">×</button>
     </div>`).join('');
+}
+
+function escFocus(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function focusAddTask() {
+  const input = document.getElementById('focus-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const tasks = focusGetTasks();
+  tasks.push({ id: Date.now(), text, done: false });
+  focusSetTasks(tasks);
+  input.value = '';
+  focusRender();
+}
+
+function focusToggle(id) {
+  focusSetTasks(focusGetTasks().map(t => t.id === id ? {...t, done: !t.done} : t));
+  focusRender();
+}
+
+function focusRemove(id) {
+  focusSetTasks(focusGetTasks().filter(t => t.id !== id));
+  focusRender();
+}
+
+function initFocus() {
+  document.getElementById('focus-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') focusAddTask();
+  });
+  // Seed SR&ED task if nothing exists today
+  if (!focusGetTasks().length) {
+    focusSetTasks([
+      { id: Date.now(), text: 'SR&ED: Send full Jira CSVs to Harold (TilePix FY2024 + FY2025)', done: false }
+    ]);
+  }
+  focusRender();
 }
 
 /* ── Delegation ── */
@@ -177,8 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderKpiCards(DATA.kpis.cards);
   renderInitiatives(DATA.initiatives);
   renderProjects(DATA.projects);
-  renderTodos(DATA.todos);
   renderDelegation(DATA.delegation);
   initAccordions();
-  initTodos();
+  initFocus();
 });

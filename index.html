@@ -63,16 +63,23 @@
     <!-- To-Do + Delegation -->
     <div class="dashboard-grid">
 
-      <!-- To-Do -->
+      <!-- Today's Focus -->
       <div class="card">
         <div class="card__header">
           <div class="card__title">
-            <div class="card__icon" style="background:var(--color-warning-lt);color:var(--color-warning)">✅</div>
-            To-Do
+            <div class="card__icon" style="background:var(--color-warning-lt);color:var(--color-warning)">🎯</div>
+            Today's Focus
           </div>
-          <span class="badge badge--gray" id="todo-count"></span>
+          <span class="badge badge--gray" id="focus-progress-label"></span>
         </div>
-        <div class="card__body--flush" id="todos-list"></div>
+        <div class="focus-add-row">
+          <input type="text" id="focus-input" placeholder="Add a task…" autocomplete="off"/>
+          <button class="btn btn--primary" onclick="focusAddTask()">Add</button>
+        </div>
+        <div class="focus-progress-wrap">
+          <div class="focus-progress-bar" id="focus-progress-bar" style="width:0%"></div>
+        </div>
+        <div class="card__body--flush" id="focus-list"></div>
       </div>
 
       <!-- Delegation & Follow-up -->
